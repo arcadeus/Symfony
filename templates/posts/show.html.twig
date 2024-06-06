@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+{% block title %}Post #{{ post.id }}{% endblock %}
+{% block body %}
+    <h1>Post #{{ post.id }}</h1>
+    <a href="." style="position:fixed; top:1em; right:1em">Наверх</a>
+    <dl>
+        <dt>Title</dt>
+        <dd>{{ post.title }}</dd>
+        <dt>Body</dt>
+        <dd>{{ post.body }}</dd>
+    </dl>
+{% endblock %}
