@@ -2,6 +2,7 @@
 {% block title %}Posts{% endblock %}
 {% block body %}
     <h1>Posts</h1>
+    <a href="/posts/new" style="position:fixed; top:1em; right:1em">Добавить Post</a>
     {% for post in posts %}
         <p>
             #{{ post.id }} <a href="{{ path('blog_show', {'id': post.id}) }}">{{ post.title }}</a>
