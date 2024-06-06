@@ -2,6 +2,7 @@
 {% block title %}Post #{{ post.id }}{% endblock %}
 {% block body %}
     <h1>Post #{{ post.id }}</h1>
+    <a href="{{ path('blog_post_edit', {'id': post.id}) }}" style="position:fixed; top:1em; right:6em">Редактировать</a>
     <a href="." style="position:fixed; top:1em; right:1em">Наверх</a>
     <dl>
         <dt>Title</dt>

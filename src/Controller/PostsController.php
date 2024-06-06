@@ -61,4 +61,26 @@ class PostsController extends AbstractController
             'post' => $post
         ]);
     }
+
+    #[Route("/posts/{id}/edit", name: "blog_post_edit")]
+    public function edit(Post $post, Request $request)
+    {
+        $form = $this->createForm(PostType::class, $post);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+            $em = $this->doctrine->getManager();
+            $em->flush();
+
+            return $this->redirectToRoute('blog_show', [
+                'id' => $post->getId()
+            ]);
+        }
+
+        return $this->render('posts/new.html.twig', [
+            'page_title' => ('Редактировать Post #' . $post->getId()),
+            'form' => $form->createView()
+        ]);
+    }
 }
