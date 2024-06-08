@@ -2,9 +2,10 @@
 {% block title %}Post #{{ post.id }}{% endblock %}
 {% block body %}
     <h1>Post #{{ post.id }}</h1>
-    <a href="{{ path('blog_post_edit', {'id': post.id}) }}" style="position:fixed; top:1em; right:11em">Редактировать</a>
-    <a href="{{ path('blog_post_delete', {'id': post.id}) }}" style="position:fixed; top:1em; right:6em">Удалить</a>
-    <a href="." style="position:fixed; top:1em; right:1em">Наверх</a>
+    <a href="{{ path('blog_post_edit', {'id': post.id}) }}" style="position:fixed; top:1em; right:16em">Редактировать</a>
+    <a href="{{ path('blog_post_delete', {'id': post.id}) }}" style="position:fixed; top:1em; right:11em">Удалить</a>
+    <a href="." style="position:fixed; top:1em; right:6em">Наверх</a>
+    <a href="/logout" style="position:fixed; top:1em; right:1em">Logout</a>
     <dl>
         <dt>Title</dt>
         <dd>{{ post.title }}</dd>
