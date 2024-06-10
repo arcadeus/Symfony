@@ -1,13 +1,14 @@
 doctrine:
     dbal:
-        url: '%env(resolve:DATABASE_URL)%'
-
-        # IMPORTANT: You MUST configure your server version,
-        # either here or in the DATABASE_URL env var (see .env file)
-        #server_version: '16'
-
-        profiling_collect_backtrace: '%kernel.debug%'
-        use_savepoints: true
+        default_connection: default
+        connections:
+            default:
+                dbname:         expert_right_agency
+                user:           root
+                password:       root123
+                host:           localhost
+                driver:         pdo_mysql
+                server_version: '8.0.36'
     orm:
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
