@@ -2,11 +2,16 @@
 
 namespace App\Tests\Controller;
 
+use App\Entity\Order;
+use App\Entity\Service;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Security\Core\User\InMemoryUser;
 
 class OrderTest extends WebTestCase
 {
+    private ?EntityManager $m_EntityManager;
+
     //
     private function login()
     {
@@ -14,6 +19,26 @@ class OrderTest extends WebTestCase
         $user = new InMemoryUser('user', '123', ['ROLE_USER']);
         $client->loginUser($user);
         return $client;
+    }
+
+    private function setupDB(): void
+    {
+        $kernel = self::bootKernel();
+        $this->m_EntityManager = $kernel->getContainer()
+            ->get('doctrine')
+            ->getManager();
+    }
+
+    function random_str($length)
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyz';
+        $charsLength = strlen($chars);
+        $res = '';
+        for ($i = 0; $i < $length; $i++)
+        {
+            $res .= $chars[rand(0, $charsLength - 1)];
+        }
+        return $res;
     }
 
     //
@@ -76,5 +101,54 @@ class OrderTest extends WebTestCase
         $client->followRedirects();
         $crawler = $client->submitForm('Подтвердить');
         $this->assertSelectorTextContains('div.error', 'Укажите электронную почту');
+    }
+
+    //
+    // При отправке авторизованным пользователем формы с заполненными полями
+    // в хранилище должен появиться новый заказ с данными, соответствующими форме
+    //
+    public function testSubmit(): void
+    {
+        $client = $this->login();
+
+        $this->setupDB();
+
+        // Select random Service
+        $services = $this->m_EntityManager
+            ->getRepository(Service::class)
+            ->findAll();
+
+        $cServises = count($services);
+        if (!$cServises)
+            die('No services found in test DB');
+
+        $nService = rand(0, $cServises - 1);
+        $nService = $services[$nService]->getId();
+
+        // Build random pseudo-EMail
+        $email = $this->random_str(8) . '@' . $this->random_str(4) . '.' . $this->random_str(2);
+
+        // Submit Order form
+        $client->request('GET', '/order');
+
+        $client->followRedirects();
+        $client->submitForm(
+            'Подтвердить',
+            [
+                'order[service]' => $nService,
+                'order[email]'   => $email,
+            ]
+        );
+
+        // Look for the INSERTed Order in DB
+        $orders = $this->m_EntityManager
+            ->getRepository(Order::class)
+            ->findBy([
+                'service' => $nService,
+                'email'   => $email
+              ]);
+
+        // 8 + 4 + 2 = 14 random letters are most likely unique
+        $this->assertSame(1, count($orders));
     }
 }
