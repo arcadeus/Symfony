@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Заказать услугу оценки{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .mb-3 {position:fixed; top:1em; right:1em}
+    table {border-collapse:collapse}
+    table td {border:1px solid #000; background-color:#fff; padding:.5em}
+</style>
+
+<script>
+    function change_service()
+    {
+        var eService = document.getElementById('order_service');
+        var price    = eService.options[eService.selectedIndex].dataset.price;
+        var ePrice   = document.getElementById('price');
+        ePrice.value = price;
+    }
+</script>
+
+{% if app.user %}
+    <div class="mb-3">
+        Вы вошли как <b>{{ app.user.userIdentifier }}</b>.&nbsp; <a href="{{ path('app_logout') }}">Logout</a>
+    </div>
+{% endif %}
+
+<div class="example-wrapper">
+    <h1>Заказать услугу оценки</h1>
+
+    {{ form_start(form) }}
+    <table>
+        <tr>
+            <td>Услуга</td>
+            <td>
+                {{ form_row(form.service) }}
+            </td>
+        </tr>
+        <tr>
+            <td>Электронная почта</td>
+            <td>
+                {{ form_row(form.email) }}
+            </td>
+        </tr>
+        <tr>
+            <td>Стоимость</td>
+            <td><input type="text" id="price" readonly="readonly"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Подтвердить"></td>
+        </tr>
+    </table>
+    {{ form_end(form) }}
+</div>
+<script>change_service()</script>
+{% endblock %}
