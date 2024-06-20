@@ -6,12 +6,15 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class OrderTest extends WebTestCase
 {
-    public function testSomething(): void
+    //
+    // При открытии формы заказа неавторизованным пользователем отображается страница с ошибкой
+    //
+    public function testForbidden(): void
     {
         $client = static::createClient();
-        $crawler = $client->request('GET', '/');
+        $crawler = $client->request('GET', '/order');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Hello World');
+        $this->assertResponseStatusCodeSame(401, 'Страница заказа должна быть доступна только авторизованным пользователям');
+        $this->assertSelectorTextContains('h1', '401', 'Заголовок сообщения об ошибке доступа должен содержать "401"');
     }
 }
