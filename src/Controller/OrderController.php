@@ -21,7 +21,7 @@ class OrderController extends AbstractController
     }
 
     #[Route('/order', name: 'app_order')]
-    public function add(Request $request, ServiceRepository $serviceRepository): Response
+    public function add(Request $request, ServiceRepository $serviceRepository, $is_error = false): Response
     {
         $new_order = new Order();
         $form = $this->createForm(
@@ -32,17 +32,31 @@ class OrderController extends AbstractController
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid())
+        if ($form->isSubmitted())
         {
-            $em = $this->doctrine->getManager();
-            $em->persist($new_order);
-            $em->flush();
+            if ($form->isValid())
+            {
+                $em = $this->doctrine->getManager();
+                $em->persist($new_order);
+                $em->flush();
 
-            return $this->redirectToRoute('app_order');
+                return $this->redirectToRoute('app_order');
+            }
+            else
+                return $this->redirectToRoute('app_order_error');
         }
 
+        $error = $is_error ? 'Укажите электронную почту' : '';
+
         return $this->render('order/add.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'error' => $error
         ]);
+    }
+
+    #[Route('/order/error', name: 'app_order_error')]
+    public function add_error(Request $request, ServiceRepository $serviceRepository): Response
+    {
+        return $this->add($request, $serviceRepository, true);
     }
 }

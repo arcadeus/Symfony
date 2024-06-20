@@ -62,4 +62,19 @@ class OrderTest extends WebTestCase
             'Должно быть ровно одна кнопка "Подтвердить"'
         );
     }
+
+    //
+    // При подтверждении заказа с незаполненной электронной почтой или не выбранной услугой
+    // пользователю отображается та же самая форма заказа с текстом ошибки в произвольном месте
+    //
+    public function testErrorMessage(): void
+    {
+        $client = $this->login();
+
+        $client->request('GET', '/order');
+
+        $client->followRedirects();
+        $crawler = $client->submitForm('Подтвердить');
+        $this->assertSelectorTextContains('div.error', 'Укажите электронную почту');
+    }
 }

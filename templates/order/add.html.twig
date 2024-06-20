@@ -9,6 +9,7 @@
     .mb-3 {position:fixed; top:1em; right:1em}
     table {border-collapse:collapse}
     table td {border:1px solid #000; background-color:#fff; padding:.5em}
+    .error {position:fixed; top:10; left:10; background-color:#fcc; padding:1em 2em; border:1px solid red}
 </style>
 
 <script>
@@ -24,6 +25,12 @@
 {% if app.user %}
     <div class="mb-3">
         Вы вошли как <b>{{ app.user.userIdentifier }}</b>.&nbsp; <a href="{{ path('app_logout') }}">Logout</a>
+    </div>
+{% endif %}
+
+{% if error %}
+    <div class="error">
+        {{ error }}
     </div>
 {% endif %}
 
